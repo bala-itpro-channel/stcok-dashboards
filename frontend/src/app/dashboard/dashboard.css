@@ -13,7 +13,7 @@
 }
 .eyebrow {
   margin: 0 0 10px;
-  color: #cc6d45;
+  color: #a84a22;
   font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 0.14em;
@@ -36,7 +36,7 @@ h1 {
 .intro {
   max-width: 520px;
   margin-bottom: 0;
-  color: #5e7070;
+  color: #465656;
   font-size: 1.06rem;
 }
 .status-indicator {
@@ -55,7 +55,7 @@ h1 {
   font-weight: 600;
 }
 .status-time {
-  color: #5e7070;
+  color: #465656;
   font-size: 0.75rem;
 }
 .status-dot {
@@ -93,7 +93,7 @@ h1 {
 }
 .control-copy p {
   margin-bottom: 0;
-  color: #718080;
+  color: #4d5e5e;
   font-size: 0.9rem;
 }
 .query-row {
@@ -113,9 +113,10 @@ input {
   padding: 13px 15px;
   outline: none;
 }
-input:focus {
-  border-color: #cc6d45;
-  box-shadow: 0 0 0 3px rgba(204, 109, 69, 0.15);
+input:focus-visible {
+  border-color: #a84a22;
+  outline: 2px solid #a84a22;
+  outline-offset: 2px;
 }
 button {
   border: 0;
@@ -130,6 +131,10 @@ button {
 }
 button:hover {
   background: #285d62;
+}
+button:focus-visible {
+  outline: 2px solid #a84a22;
+  outline-offset: 2px;
 }
 button:disabled {
   cursor: wait;
@@ -154,9 +159,9 @@ button:disabled {
   width: 42px;
   height: 42px;
   place-items: center;
-  border: 1px solid #cc6d45;
+  border: 1px solid #a84a22;
   border-radius: 50%;
-  color: #cc6d45;
+  color: #a84a22;
   font-size: 1.7rem;
 }
 .empty-state h2 {
@@ -167,7 +172,7 @@ button:disabled {
   font-weight: 500;
 }
 .empty-state p {
-  color: #718080;
+  color: #4d5e5e;
 }
 .chart-panel {
   margin-top: 24px;
@@ -191,7 +196,7 @@ button:disabled {
   display: flex;
   flex-wrap: wrap;
   gap: 18px;
-  color: #5e7070;
+  color: #465656;
   font-size: 0.85rem;
 }
 .legend span {
@@ -274,36 +279,36 @@ button:disabled {
   letter-spacing: 0.04em;
 }
 .symbol-label {
-  color: #6f7d7d;
+  color: #465656;
 }
 .symbol-label.trend-green {
-  color: #28d27c;
+  color: #137241;
 }
 .symbol-label.trend-blue {
-  color: #3478b8;
+  color: #1a5085;
 }
 .symbol-label.trend-red {
-  color: #c44c4c;
+  color: #a12828;
 }
 .trend-note {
   margin: 22px 0 0;
-  color: #718080;
+  color: #4d5e5e;
   font-size: 0.78rem;
   line-height: 1.6;
 }
 .trend-note strong {
-  color: #526565;
+  color: #173f46;
 }
 .trend-note .note-green {
-  color: #28d27c;
+  color: #137241;
   font-weight: 800;
 }
 .trend-note .note-blue {
-  color: #3478b8;
+  color: #1a5085;
   font-weight: 800;
 }
 .trend-note .note-red {
-  color: #c44c4c;
+  color: #a12828;
   font-weight: 800;
 }
 .quote-table-wrap {
@@ -334,7 +339,7 @@ button:disabled {
 }
 .quote-table thead th {
   background: #fbfcf9;
-  color: #718080;
+  color: #4d5e5e;
   font-size: 0.72rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -344,16 +349,16 @@ button:disabled {
   text-align: left;
 }
 .quote-table .trend-green {
-  color: #28d27c;
+  color: #137241;
 }
 .quote-table tbody td.trend-green {
-  color: #218653;
+  color: #137241;
 }
 .quote-table .trend-blue {
-  color: #3478b8;
+  color: #1a5085;
 }
 .quote-table .trend-red {
-  color: #c44c4c;
+  color: #a12828;
 }
 @media (max-width: 700px) {
   .dashboard-shell {

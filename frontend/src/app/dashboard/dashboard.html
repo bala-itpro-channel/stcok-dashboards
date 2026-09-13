@@ -5,11 +5,11 @@
       <h1>Stock price snapshots</h1>
       <p class="intro">Compare today's opening and latest prices across the symbols you follow.</p>
     </div>
-    <div class="status-indicator">
+    <div class="status-indicator" role="status" aria-live="polite">
       <div
         class="status-dot"
         [class.refreshing]="refreshing()"
-        aria-label="Live API connection"
+        aria-label="Live API connection status"
       ></div>
       <div class="status-details">
         <span class="status-label">Auto-refresh 30s</span>
@@ -23,7 +23,7 @@
   <section class="control-panel" aria-labelledby="symbols-label">
     <div class="control-copy">
       <label id="symbols-label" for="symbols">Symbols</label>
-      <p>Enter tickers separated by commas.</p>
+      <p id="symbols-help">Enter tickers separated by commas.</p>
     </div>
     <div class="query-row">
       <input
@@ -32,6 +32,7 @@
         [value]="symbolsInput()"
         (input)="setSymbols($event)"
         (keyup.enter)="fetchQuotes()"
+        aria-describedby="symbols-help"
         placeholder="AAPL, MSFT, GOOGL"
         autocomplete="off"
       />
@@ -46,10 +47,10 @@
   }
 
   @if (loading()) {
-    <div class="message">Fetching the latest market data...</div>
+    <div class="message" role="status" aria-live="polite">Fetching the latest market data...</div>
   } @else if (!hasSearched()) {
     <div class="empty-state">
-      <span class="empty-mark">+</span>
+      <span class="empty-mark" aria-hidden="true">+</span>
       <h2>Build your watchlist view</h2>
       <p>Choose one or more symbols above to compare open and close prices.</p>
     </div>
@@ -61,9 +62,9 @@
           <h2 id="chart-title">Previous close, open, and close</h2>
         </div>
         <div class="legend" aria-label="Chart legend">
-          <span><i class="legend-swatch previous-close"></i>Previous close</span>
-          <span><i class="legend-swatch open"></i>Open price</span>
-          <span><i class="legend-swatch close"></i>Close price</span>
+          <span><i class="legend-swatch previous-close" aria-hidden="true"></i>Previous close</span>
+          <span><i class="legend-swatch open" aria-hidden="true"></i>Open price</span>
+          <span><i class="legend-swatch close" aria-hidden="true"></i>Close price</span>
         </div>
       </div>
 
