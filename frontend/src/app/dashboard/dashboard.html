@@ -5,7 +5,19 @@
       <h1>Stock price snapshots</h1>
       <p class="intro">Compare today's opening and latest prices across the symbols you follow.</p>
     </div>
-    <div class="status-dot" aria-label="Live API connection"></div>
+    <div class="status-indicator">
+      <div
+        class="status-dot"
+        [class.refreshing]="refreshing()"
+        aria-label="Live API connection"
+      ></div>
+      <div class="status-details">
+        <span class="status-label">Auto-refresh 30s</span>
+        @if (formattedLastUpdated()) {
+          <span class="status-time">Updated {{ formattedLastUpdated() }}</span>
+        }
+      </div>
+    </div>
   </header>
 
   <section class="control-panel" aria-labelledby="symbols-label">

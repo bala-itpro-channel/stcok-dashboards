@@ -1,5 +1,7 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { timer } from 'rxjs';
 
 interface Quote {
   symbol: string;
@@ -15,6 +17,7 @@ interface Quote {
   selector: 'app-dashboard',
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Dashboard {
   private static readonly symbolsStorageKey = 'stock-dashboard-symbols';
@@ -25,8 +28,14 @@ export class Dashboard {
     [...this.quotes()].sort((left, right) => this.profit(right) - this.profit(left)),
   );
   protected readonly loading = signal(false);
+  protected readonly refreshing = signal(false);
   protected readonly error = signal('');
   protected readonly hasSearched = signal(false);
+  protected readonly lastUpdated = signal<Date | null>(null);
+  protected readonly formattedLastUpdated = computed(() => {
+    const date = this.lastUpdated();
+    return date ? date.toLocaleTimeString() : '';
+  });
   protected readonly maxPrice = computed(() => {
     const prices = this.quotes().flatMap((quote) => [quote.previousClose, quote.open, quote.close]);
     return Math.max(...prices, 1);
@@ -37,9 +46,15 @@ export class Dashboard {
     if (storedSymbols) {
       this.symbolsInput.set(storedSymbols);
     }
+
+    timer(0, 30000)
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => {
+        this.fetchQuotes(true);
+      });
   }
 
-  protected fetchQuotes(): void {
+  protected fetchQuotes(isAutoRefresh = false): void {
     const symbols = this.symbolsInput()
       .split(',')
       .map((symbol) => symbol.trim().toUpperCase())
@@ -52,7 +67,12 @@ export class Dashboard {
       return;
     }
 
-    this.loading.set(true);
+    if (isAutoRefresh && this.quotes().length > 0) {
+      this.refreshing.set(true);
+    } else {
+      this.loading.set(true);
+    }
+
     this.error.set('');
     this.hasSearched.set(true);
 
@@ -95,15 +115,20 @@ export class Dashboard {
             );
 
           this.quotes.set(nextQuotes);
+          this.lastUpdated.set(new Date());
           if (nextQuotes.length === 0) {
             this.error.set('No quote data was returned for those symbols.');
           }
           this.loading.set(false);
+          this.refreshing.set(false);
         },
         error: (response) => {
-          this.quotes.set([]);
+          if (!isAutoRefresh) {
+            this.quotes.set([]);
+          }
           this.error.set(response.error?.error || 'Unable to load stock quotes.');
           this.loading.set(false);
+          this.refreshing.set(false);
         },
       });
   }
