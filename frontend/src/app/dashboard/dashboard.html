@@ -1,0 +1,142 @@
+<main class="dashboard-shell">
+  <header class="hero">
+    <div>
+      <p class="eyebrow">Market pulse</p>
+      <h1>Stock price snapshots</h1>
+      <p class="intro">Compare today's opening and latest prices across the symbols you follow.</p>
+    </div>
+    <div class="status-dot" aria-label="Live API connection"></div>
+  </header>
+
+  <section class="control-panel" aria-labelledby="symbols-label">
+    <div class="control-copy">
+      <label id="symbols-label" for="symbols">Symbols</label>
+      <p>Enter tickers separated by commas.</p>
+    </div>
+    <div class="query-row">
+      <input
+        id="symbols"
+        type="text"
+        [value]="symbolsInput()"
+        (input)="setSymbols($event)"
+        (keyup.enter)="fetchQuotes()"
+        placeholder="AAPL, MSFT, GOOGL"
+        autocomplete="off"
+      />
+      <button type="button" (click)="fetchQuotes()" [disabled]="loading()">
+        {{ loading() ? 'Loading...' : 'Fetch prices' }}
+      </button>
+    </div>
+  </section>
+
+  @if (error()) {
+    <p class="message error" role="alert">{{ error() }}</p>
+  }
+
+  @if (loading()) {
+    <div class="message">Fetching the latest market data...</div>
+  } @else if (!hasSearched()) {
+    <div class="empty-state">
+      <span class="empty-mark">+</span>
+      <h2>Build your watchlist view</h2>
+      <p>Choose one or more symbols above to compare open and close prices.</p>
+    </div>
+  } @else if (sortedQuotes().length > 0) {
+    <section class="chart-panel" aria-labelledby="chart-title">
+      <div class="chart-heading">
+        <div>
+          <p class="eyebrow">Latest response</p>
+          <h2 id="chart-title">Previous close, open, and close</h2>
+        </div>
+        <div class="legend" aria-label="Chart legend">
+          <span><i class="legend-swatch previous-close"></i>Previous close</span>
+          <span><i class="legend-swatch open"></i>Open price</span>
+          <span><i class="legend-swatch close"></i>Close price</span>
+        </div>
+      </div>
+
+      <div class="chart" role="img" aria-label="Bar chart comparing open and close prices">
+        @for (quote of sortedQuotes(); track quote.symbol) {
+          <div class="symbol-group">
+            <div class="bars">
+              <div class="bar-wrap">
+                <div
+                  class="bar previous-close"
+                  [style.height]="barHeight(quote.previousClose)"
+                  [attr.title]="
+                    quote.symbol + ' previous close: $' + quote.previousClose.toFixed(2)
+                  "
+                >
+                  <span>${{ quote.previousClose.toFixed(2) }}</span>
+                </div>
+              </div>
+              <div class="bar-wrap">
+                <div
+                  class="bar open"
+                  [style.height]="barHeight(quote.open)"
+                  [attr.title]="quote.symbol + ' open: $' + quote.open.toFixed(2)"
+                >
+                  <span>${{ quote.open.toFixed(2) }}</span>
+                </div>
+              </div>
+              <div class="bar-wrap">
+                <div
+                  class="bar close"
+                  [style.height]="barHeight(quote.close)"
+                  [attr.title]="quote.symbol + ' close: $' + quote.close.toFixed(2)"
+                >
+                  <span>${{ quote.close.toFixed(2) }}</span>
+                </div>
+              </div>
+            </div>
+            <strong class="symbol-label" [class]="trendClass(quote)">{{ quote.symbol }}</strong>
+          </div>
+        }
+      </div>
+      <p class="trend-note">
+        <strong>Status:</strong>
+        <br />
+        <span class="note-green">Green</span> means open and close are above the previous close.
+        <br />
+        <span class="note-blue">Blue</span> means close is below open but above the previous close.
+        <br />
+        <span class="note-red">red</span> means close is below the previous close.
+      </p>
+      <div class="quote-table-wrap">
+        <table class="quote-table">
+          <caption>
+            Stock price details, sorted by profit
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Symbol</th>
+              <th scope="col">Previous close</th>
+              <th scope="col">Open</th>
+              <th scope="col">Day high</th>
+              <th scope="col">Day low</th>
+              <th scope="col">Current price</th>
+              <th scope="col">Volume</th>
+              <th scope="col">Profit</th>
+              <th scope="col">% gain/loss</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (quote of sortedQuotes(); track quote.symbol) {
+              <tr>
+                <th scope="row" [class]="trendClass(quote)">{{ quote.symbol }}</th>
+                <td>${{ quote.previousClose.toFixed(2) }}</td>
+                <td>${{ quote.open.toFixed(2) }}</td>
+                <td>${{ quote.high.toFixed(2) }}</td>
+                <td>${{ quote.low.toFixed(2) }}</td>
+                <td>${{ quote.close.toFixed(2) }}</td>
+                <td>{{ formatVolume(quote) }}</td>
+                <td [class]="trendClass(quote)">{{ formatProfit(quote) }}</td>
+                <td [class]="trendClass(quote)">{{ formatPercentageChange(quote) }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  }
+</main>

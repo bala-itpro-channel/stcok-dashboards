@@ -1,0 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+html {
+  min-width: 320px;
+  background: #f3f6f1;
+}
+body {
+  min-height: 100vh;
+  margin: 0;
+  background:
+    radial-gradient(circle at 92% 6%, rgba(224, 154, 82, 0.16), transparent 25rem),
+    linear-gradient(135deg, #f4f7f2 0%, #e8f0e9 100%);
+  color: #173f46;
+  font-family: 'DM Sans', 'Segoe UI', sans-serif;
+}
